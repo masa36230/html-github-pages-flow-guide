@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HTML → GitHub Pages 公開フロー（図解）</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a222c;
+      --surface2: #232d3a;
+      --text: #e8eef4;
+      --muted: #9aa8b6;
+      --accent: #3dd6c3;
+      --accent-dim: rgba(61, 214, 195, 0.15);
+      --warm: #ffb86b;
+      --warm-dim: rgba(255, 184, 107, 0.18);
+      --violet: #bd93f9;
+      --violet-dim: rgba(189, 147, 249, 0.15);
+      --danger: #ff6b8a;
+      --radius: 16px;
+      --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Zen Kaku Gothic New", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    header.hero {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-dim);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: clamp(1.55rem, 4vw, 2.15rem);
+      font-weight: 900;
+      margin: 0 0 0.75rem;
+      line-height: 1.25;
+    }
+
+    .lead {
+      color: var(--muted);
+      max-width: 36rem;
+      margin: 0 auto;
+      font-size: 1.02rem;
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin: 2.75rem 0 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h2 span.num {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.85rem;
+      color: var(--bg);
+      background: var(--accent);
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lane-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    @media (max-width: 680px) {
+      .lane-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .lane {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.35rem;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: var(--shadow);
+    }
+
+    .lane h3 {
+      margin: 0 0 0.65rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .lane.ai h3 {
+      color: var(--violet);
+    }
+
+    .lane.you h3 {
+      color: var(--warm);
+    }
+
+    .lane ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .lane li {
+      margin-bottom: 0.4rem;
+    }
+
+    .overview {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin: 1.5rem 0 0.5rem;
+    }
+
+    @media (max-width: 720px) {
+      .overview {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .overview-card {
+      background: linear-gradient(145deg, var(--surface2), var(--surface));
+      border-radius: var(--radius);
+      padding: 1.15rem 1.2rem;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .overview-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent);
+      opacity: 0.85;
+    }
+
+    .overview-card:nth-child(2)::before {
+      background: var(--violet);
+    }
+
+    .overview-card:nth-child(3)::before {
+      background: var(--warm);
+    }
+
+    .overview-card strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .overview-card p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .flow {
+      margin: 2rem 0;
+    }
+
+    .step-row {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .step-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.35rem 1.35rem;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .step-card .step-label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      margin-bottom: 0.35rem;
+    }
+
+    .step-card h4 {
+      margin: 0 0 0.5rem;
+      font-size: 1.12rem;
+      font-weight: 700;
+    }
+
+    .step-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .step-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+
+    .pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.25rem 0.55rem;
+      border-radius: 6px;
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    .pill.ai {
+      background: var(--violet-dim);
+      color: var(--violet);
+    }
+
+    .pill.you {
+      background: var(--warm-dim);
+      color: var(--warm);
+    }
+
+    .pill.both {
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+
+    .arrow-down {
+      display: flex;
+      justify-content: center;
+      padding: 0.35rem 0 0.5rem;
+      color: var(--muted);
+    }
+
+    .arrow-down svg {
+      width: 28px;
+      height: 28px;
+      opacity: 0.65;
+    }
+
+    .diagram-svg {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      margin: 1.25rem 0 0.5rem;
+      border-radius: var(--radius);
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .note {
+      background: rgba(255, 107, 138, 0.1);
+      border-left: 4px solid var(--danger);
+      padding: 0.9rem 1rem;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin: 1.25rem 0;
+      font-size: 0.92rem;
+      color: var(--text);
+    }
+
+    .note strong {
+      color: var(--danger);
+    }
+
+    .success-banner {
+      text-align: center;
+      background: linear-gradient(120deg, var(--accent-dim), var(--violet-dim));
+      border: 1px solid rgba(61, 214, 195, 0.35);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.25rem;
+      margin-top: 0.5rem;
+    }
+
+    .success-banner .url-sample {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.85rem;
+      color: var(--accent);
+      word-break: break-all;
+      margin-top: 0.5rem;
+    }
+
+    .update-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem 0.35rem;
+      margin: 1.25rem 0;
+      padding: 1.25rem;
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px dashed rgba(255, 255, 255, 0.12);
+    }
+
+    .update-box {
+      background: var(--surface2);
+      padding: 0.65rem 1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .update-arrow {
+      color: var(--muted);
+      font-size: 1.2rem;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    code {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.82em;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 0.12rem 0.35rem;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="badge">Cursor スキル図解</div>
+      <h1>HTML を作って、Git に載せて、<br />世界中に公開するまで</h1>
+      <p class="lead">
+        「html-to-github-pages」スキルの流れを、AI 初心者の方でも頭に入るようにビジュアル化しました。Cursor に依頼するイメージと、自分で触るポイントが分かります。
+      </p>
+    </header>
+
+    <section aria-labelledby="overview-title">
+      <h2 id="overview-title"><span class="num">1</span> 全体は3つの山</h2>
+      <div class="overview">
+        <div class="overview-card">
+          <strong>① 下ごしらえ</strong>
+          <p>HTML を用意し、画像など同梱ファイルをまとめてフォルダに置く</p>
+        </div>
+        <div class="overview-card">
+          <strong>② GitHub へ送る</strong>
+          <p>Git で記録し、GitHub にリポジトリとして載せる</p>
+        </div>
+        <div class="overview-card">
+          <strong>③ 公開 URL</strong>
+          <p>GitHub Pages が Web サーバの役割になり、誰でも見られる URL が付く</p>
+        </div>
+      </div>
+
+      <svg class="diagram-svg" viewBox="0 0 800 220" role="img" aria-label="あなたのPCからGitHub経由でインターネットへ公開される概念図">
+        <title>公開の概念図</title>
+        <defs>
+          <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#3dd6c3;stop-opacity:0.35" />
+            <stop offset="100%" style="stop-color:#bd93f9;stop-opacity:0.35" />
+          </linearGradient>
+          <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#3dd6c3" />
+          </marker>
+          <marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#bd93f9" />
+          </marker>
+        </defs>
+        <rect x="40" y="70" width="160" height="90" rx="14" fill="#232d3a" stroke="#3dd6c3" stroke-width="2" />
+        <text x="120" y="108" text-anchor="middle" fill="#e8eef4" font-size="15" font-family="Zen Kaku Gothic New, sans-serif" font-weight="700">あなたのPC</text>
+        <text x="120" y="132" text-anchor="middle" fill="#9aa8b6" font-size="12" font-family="Zen Kaku Gothic New, sans-serif">index.html フォルダ</text>
+        <path d="M 210 115 L 310 115" stroke="url(#g1)" stroke-width="4" fill="none" marker-end="url(#arrowhead)" />
+        <rect x="320" y="55" width="160" height="120" rx="14" fill="#232d3a" stroke="#bd93f9" stroke-width="2" />
+        <text x="400" y="95" text-anchor="middle" fill="#e8eef4" font-size="15" font-family="Zen Kaku Gothic New, sans-serif" font-weight="700">GitHub</text>
+        <text x="400" y="118" text-anchor="middle" fill="#9aa8b6" font-size="12" font-family="Zen Kaku Gothic New, sans-serif">リポジトリ + Pages設定</text>
+        <text x="400" y="142" text-anchor="middle" fill="#9aa8b6" font-size="11" font-family="Zen Kaku Gothic New, sans-serif">（クラウド上の置き場）</text>
+        <path d="M 490 115 L 590 115" stroke="url(#g1)" stroke-width="4" fill="none" marker-end="url(#arrowhead2)" />
+        <rect x="600" y="70" width="160" height="90" rx="14" fill="#232d3a" stroke="#ffb86b" stroke-width="2" />
+        <text x="680" y="108" text-anchor="middle" fill="#e8eef4" font-size="15" font-family="Zen Kaku Gothic New, sans-serif" font-weight="700">インターネット</text>
+        <text x="680" y="132" text-anchor="middle" fill="#9aa8b6" font-size="12" font-family="Zen Kaku Gothic New, sans-serif">公開URLで閲覧</text>
+      </svg>
+    </section>
+
+    <section aria-labelledby="roles-title">
+      <h2 id="roles-title"><span class="num">2</span> 誰が何をする？</h2>
+      <div class="lane-grid">
+        <div class="lane ai">
+          <h3>Cursor（AI）が得意なこと</h3>
+          <ul>
+            <li>HTML の作成・修正、デザインの調整</li>
+            <li>フォルダ作成、<code>index.html</code> の保存、アセットの同梱</li>
+            <li>Git の初期化、コミット、公開用スクリプトの実行案内</li>
+            <li>公開後の URL とローカルパスの整理・記載</li>
+          </ul>
+        </div>
+        <div class="lane you">
+          <h3>あなたが一度だけ／ときどきやること</h3>
+          <ul>
+            <li>初回だけ <code>gh auth login</code>（GitHub CLI のログイン）</li>
+            <li>リポジトリ名の確認（英小文字・数字・ハイフン）</li>
+            <li>更新時は HTML を直したあと、push を依頼または実行</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="first-title">
+      <h2 id="first-title"><span class="num">3</span> 初回公開の流れ（ステップ）</h2>
+      <p style="color: var(--muted); margin-top: -0.5rem;">上から順に進むイメージです。番号はスキル内の工程に対応しています。</p>
+
+      <div class="flow">
+        <div class="step-row">
+          <div class="step-card">
+            <div class="step-label">STEP 01</div>
+            <h4>HTML と「置き場所」を決める</h4>
+            <p>ファイルパスで渡すか、チャットに HTML を貼る。LP ならルートに <code>index.html</code>。リポジトリ名は英数字の名前に。</p>
+            <div class="step-meta">
+              <span class="pill both">あなた：素材・希望</span>
+              <span class="pill ai">AI：保存・命名の整理</span>
+            </div>
+          </div>
+          <div class="arrow-down" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          </div>
+
+          <div class="step-card">
+            <div class="step-label">STEP 02</div>
+            <h4>サイト用フォルダにまとめる</h4>
+            <p>マイドライブの <code>github_pages_sites/&lt;リポジトリ名&gt;/</code> に配置。画像や CSS など相対パス参照があるものは同じフォルダへ。</p>
+            <div class="step-meta">
+              <span class="pill ai">AI：フォルダ作成・コピー</span>
+            </div>
+          </div>
+          <div class="arrow-down" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          </div>
+
+          <div class="step-card">
+            <div class="step-label">STEP 03</div>
+            <h4>Git で「スナップショット」を1枚目撮る</h4>
+            <p><code>git init</code> → <code>git add</code> → <code>git commit</code>。これで「この時点のファイル一式」が記録されます。</p>
+            <div class="step-meta">
+              <span class="pill ai">AI：コマンド実行または案内</span>
+            </div>
+          </div>
+          <div class="arrow-down" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          </div>
+
+          <div class="step-card">
+            <div class="step-label">STEP 04</div>
+            <h4>GitHub にログインできるか確認</h4>
+            <p>未ログインなら <code>gh auth login</code> を<strong>1行だけ</strong>ターミナルで実行（他のコマンドと混ぜない）。</p>
+            <div class="step-meta">
+              <span class="pill you">あなた：ブラウザ認証</span>
+              <span class="pill ai">AI：要否の確認</span>
+            </div>
+          </div>
+          <div class="arrow-down" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          </div>
+
+          <div class="step-card">
+            <div class="step-label">STEP 05</div>
+            <h4>公開スクリプトでリポジトリ作成＋Pages 有効化</h4>
+            <p><code>publish_github_pages.sh</code> を環境変数付きで実行。リモート作成、push、Pages 設定まで一気に進みます。</p>
+            <div class="step-meta">
+              <span class="pill ai">AI：実行・結果の共有</span>
+            </div>
+          </div>
+          <div class="arrow-down" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          </div>
+
+          <div class="success-banner">
+            <strong style="font-size: 1.05rem; color: var(--text);">完了：納品される情報の例</strong>
+            <div class="url-sample">https://（ユーザー名）.github.io/（リポジトリ名）/</div>
+            <p style="margin: 0.75rem 0 0; font-size: 0.88rem; color: var(--muted);">初回は数分 404 が続くことがあります。スーパーリロードも有効です。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>つまずきやすいポイント</strong><br />
+        <code>gh auth login</code> の途中で <code>cd</code> や別コマンドを同じ貼り付けに混ぜると失敗しやすいです。必ず「ログイン用のコマンドだけ」を1つずつ実行してください。
+      </div>
+    </section>
+
+    <section aria-labelledby="update-title">
+      <h2 id="update-title"><span class="num">4</span> 2回目以降の更新（もっと短い）</h2>
+      <p style="color: var(--muted); margin-top: -0.5rem;">Pages の設定が済んでいれば、公開スクリプトは不要です。<strong>push だけ</strong>で更新できます。</p>
+
+      <div class="update-flow">
+        <span class="update-box">HTML を編集</span>
+        <span class="update-arrow">→</span>
+        <span class="update-box">git add / commit</span>
+        <span class="update-arrow">→</span>
+        <span class="update-box">git push</span>
+        <span class="update-arrow">→</span>
+        <span class="update-box" style="border: 1px solid var(--accent); color: var(--accent);">サイトに反映</span>
+      </div>
+    </section>
+
+    <section aria-labelledby="ask-title">
+      <h2 id="ask-title"><span class="num">5</span> Cursor にこう頼むとスムーズ</h2>
+      <div class="step-card" style="margin-top: 1rem;">
+        <h4 style="margin-bottom: 0.65rem;">初回</h4>
+        <p style="color: var(--text);">「この HTML を GitHub Pages で公開して」「<code>index.html</code> をこの内容で作って Pages に載せて」</p>
+        <h4 style="margin: 1.15rem 0 0.65rem;">更新</h4>
+        <p style="color: var(--text);">「同じサイトの HTML を直したので push して」「公開済みリポジトリの <code>index.html</code> を更新して反映して」</p>
+      </div>
+    </section>
+
+    <footer>
+      このページはスキル「html-to-github-pages」の工程を図解したものです。実際のコマンドやパスの正本は Cursor 内の SKILL.md を参照してください。
+    </footer>
+  </div>
+</body>
+</html>
