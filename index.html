@@ -3,507 +3,320 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Cursorでサイトを公開するまで（やさしい図）</title>
+  <title>Cursorでサイト公開まで（超シンプル図）</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --cream: #fff8f0;
-      --paper: #ffffff;
       --ink: #2d2a32;
-      --ink-soft: #5c5663;
-      --mint: #5ad4b8;
-      --mint-bg: #e6faf5;
-      --sky: #6eb6ff;
-      --sky-bg: #eaf4ff;
-      --peach: #ff9e8e;
-      --peach-bg: #ffece8;
-      --sun: #ffd84d;
-      --sun-bg: #fff8dc;
-      --lav: #b8a9ff;
-      --lav-bg: #f0edff;
-      --radius: 22px;
-      --shadow: 0 8px 28px rgba(45, 42, 50, 0.08);
-      --shadow-pop: 0 12px 0 rgba(45, 42, 50, 0.06);
+      --muted: #6b6570;
+      --mint: #3ec9a8;
+      --lav: #9b8cff;
+      --coral: #ff7b9c;
+      --sun: #ffc93c;
+      --sky: #5eb0ff;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; }
 
     html {
-      font-size: 112.5%;
+      font-size: 100%;
     }
 
     body {
       margin: 0;
+      min-height: 100dvh;
       font-family: "M PLUS Rounded 1c", sans-serif;
-      background: var(--cream);
-      color: var(--ink);
-      line-height: 1.75;
-      font-size: 1.15rem;
+      font-size: 1.02rem;
       font-weight: 500;
+      line-height: 1.65;
+      color: var(--ink);
+      background: linear-gradient(125deg, #fff5fb 0%, #f0f7ff 35%, #fff9e6 70%, #f5fff8 100%);
+      background-size: 240% 240%;
+      animation: bgShift 14s ease-in-out infinite;
+    }
+
+    @keyframes bgShift {
+      0%, 100% { background-position: 0% 40%; }
+      50% { background-position: 100% 60%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body { animation: none; background-size: auto; }
+      .pop, .bounce, .pulse-line, .dash-move, .sparkle-spin, .arrow-bob, .card-pop { animation: none !important; }
     }
 
     .wrap {
-      max-width: 38rem;
+      max-width: 22rem;
       margin: 0 auto;
-      padding: 1.75rem 1.15rem 3.5rem;
+      padding: 1.35rem 1rem 2.5rem;
     }
 
     .hero {
       text-align: center;
-      padding: 1rem 0 1.5rem;
+      padding: 0.25rem 0 1rem;
     }
 
     .hero-emoji {
-      font-size: 3.2rem;
+      font-size: 2.75rem;
       line-height: 1;
-      margin-bottom: 0.65rem;
-      filter: drop-shadow(0 4px 0 rgba(0, 0, 0, 0.06));
+      display: inline-block;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      40% { transform: translateY(-8px) scale(1.05); }
+      55% { transform: translateY(0) scale(1); }
     }
 
     h1 {
-      font-size: clamp(1.65rem, 6.2vw, 2.05rem);
+      font-size: clamp(1.28rem, 5.5vw, 1.48rem);
       font-weight: 800;
-      margin: 0 0 0.85rem;
-      line-height: 1.35;
-      letter-spacing: 0.02em;
+      margin: 0.55rem 0 0.45rem;
+      line-height: 1.38;
     }
 
-    .lead {
-      margin: 0 auto;
-      max-width: 32rem;
-      color: var(--ink-soft);
-      font-size: 1.2rem;
-      font-weight: 500;
+    .sub {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
     }
 
-    .tagline {
+    .flow {
+      margin-top: 1.25rem;
+    }
+
+    .step {
+      background: #fff;
+      border-radius: 20px;
+      padding: 1rem 1rem 1.05rem;
+      text-align: center;
+      border: 3px solid rgba(45, 42, 50, 0.08);
+      box-shadow: 0 8px 0 rgba(45, 42, 50, 0.06), 0 14px 28px rgba(80, 60, 120, 0.08);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      opacity: 0;
+      animation: cardPop 0.65s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
+    }
+
+    .step:nth-child(1) { animation-delay: 0.05s; }
+    .step:nth-child(3) { animation-delay: 0.2s; }
+    .step:nth-child(5) { animation-delay: 0.35s; }
+    .step:nth-child(7) { animation-delay: 0.5s; }
+
+    @keyframes cardPop {
+      from { opacity: 0; transform: translateY(18px) scale(0.94); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .step:hover {
+      transform: translateY(-4px) rotate(-0.5deg);
+      box-shadow: 0 12px 0 rgba(45, 42, 50, 0.07), 0 20px 36px rgba(80, 60, 120, 0.12);
+    }
+
+    .step .big {
+      font-size: 2.1rem;
+      line-height: 1;
+      margin-bottom: 0.35rem;
+      display: block;
+    }
+
+    .step .t {
+      font-weight: 800;
+      font-size: 1.05rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .step .d {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .step.a { border-color: #b8f0e0; background: linear-gradient(180deg, #ffffff 0%, #f0fffa 100%); }
+    .step.b { border-color: #d4caff; background: linear-gradient(180deg, #ffffff 0%, #f7f4ff 100%); }
+    .step.c { border-color: #b8dcff; background: linear-gradient(180deg, #ffffff 0%, #f3f9ff 100%); }
+
+    .between {
+      display: flex;
+      justify-content: center;
+      padding: 0.35rem 0 0.45rem;
+    }
+
+    .arrow-bob {
+      font-size: 1.55rem;
+      color: var(--lav);
+      animation: arrowBob 1.1s ease-in-out infinite;
+    }
+
+    @keyframes arrowBob {
+      0%, 100% { transform: translateY(0); opacity: 0.85; }
+      50% { transform: translateY(6px); opacity: 1; }
+    }
+
+    .api-box {
+      margin-top: 1.15rem;
+      padding: 0.95rem 1rem;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #fff8e7 0%, #ffe8f4 100%);
+      border: 3px solid #ffd48a;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      animation: cardPop 0.65s cubic-bezier(0.34, 1.4, 0.64, 1) 0.62s forwards;
+    }
+
+    .api-box::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle, rgba(255, 201, 60, 0.35) 0%, transparent 55%);
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(0.9); opacity: 0.5; }
+      50% { transform: scale(1.05); opacity: 0.85; }
+    }
+
+    .api-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .api-box .label {
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
-      margin-top: 1.1rem;
-      padding: 0.45rem 0.95rem;
-      background: var(--sun-bg);
-      border-radius: 999px;
-      font-size: 1.02rem;
-      font-weight: 700;
-      color: #8a6a00;
-      border: 3px solid #ffe08a;
-    }
-
-    h2 {
-      font-size: clamp(1.35rem, 5vw, 1.55rem);
+      gap: 0.3rem;
       font-weight: 800;
-      margin: 2.4rem 0 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-      flex-wrap: wrap;
-    }
-
-    h2 .icon {
-      font-size: 1.5rem;
-    }
-
-    .card {
-      background: var(--paper);
-      border-radius: var(--radius);
-      padding: 1.35rem 1.25rem 1.45rem;
-      box-shadow: var(--shadow), var(--shadow-pop);
-      border: 3px solid rgba(45, 42, 50, 0.07);
-      margin-bottom: 1rem;
-    }
-
-    .card p {
-      margin: 0;
-      font-size: 1.18rem;
-    }
-
-    .card p + p {
-      margin-top: 0.75rem;
-    }
-
-    .three {
-      display: grid;
-      gap: 0.85rem;
-      margin: 1rem 0 0.25rem;
-    }
-
-    .step-pill {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-      padding: 1rem 1.05rem;
-      border-radius: 18px;
-      font-size: 1.15rem;
-      font-weight: 700;
-      border: 3px solid transparent;
-    }
-
-    .step-pill span.e {
-      font-size: 1.65rem;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-
-    .step-pill.mint {
-      background: var(--mint-bg);
-      border-color: #b8f0e0;
-    }
-
-    .step-pill.sky {
-      background: var(--sky-bg);
-      border-color: #c5ddff;
-    }
-
-    .step-pill.peach {
-      background: var(--peach-bg);
-      border-color: #ffc9be;
-    }
-
-    .flow-art {
-      width: 100%;
-      max-width: 100%;
-      height: auto;
-      margin: 1.1rem 0 0.25rem;
-      display: block;
-    }
-
-    .lanes {
-      display: grid;
-      gap: 0.9rem;
-      margin-top: 0.75rem;
-    }
-
-    .lane {
-      border-radius: var(--radius);
-      padding: 1.2rem 1.15rem;
-      border: 3px solid rgba(45, 42, 50, 0.08);
-    }
-
-    .lane.ai {
-      background: var(--lav-bg);
-      border-color: #dcd4ff;
-    }
-
-    .lane.you {
-      background: var(--sun-bg);
-      border-color: #ffe08a;
-    }
-
-    .lane h3 {
-      margin: 0 0 0.55rem;
-      font-size: 1.22rem;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    .lane ul {
-      margin: 0;
-      padding-left: 1.2rem;
-      color: var(--ink-soft);
-      font-size: 1.12rem;
-      font-weight: 500;
-    }
-
-    .lane li {
-      margin-bottom: 0.45rem;
-    }
-
-    .timeline {
-      margin: 1rem 0 0;
-    }
-
-    .t-item {
-      display: flex;
-      gap: 0.85rem;
-      align-items: flex-start;
-      margin-bottom: 1.05rem;
-    }
-
-    .t-bubble {
-      flex: 1;
-      background: var(--paper);
-      border-radius: 20px;
-      padding: 1.05rem 1.1rem;
-      border: 3px solid rgba(45, 42, 50, 0.08);
-      box-shadow: var(--shadow);
-    }
-
-    .t-num {
-      width: 2.6rem;
-      height: 2.6rem;
-      border-radius: 50%;
-      background: var(--mint);
-      color: #fff;
-      font-weight: 800;
-      font-size: 1.15rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      border: 3px solid #3db89a;
-      box-shadow: 0 4px 0 #3db89a;
-    }
-
-    .t-bubble strong {
-      display: block;
-      font-size: 1.2rem;
+      font-size: 0.95rem;
       margin-bottom: 0.35rem;
-      font-weight: 800;
     }
 
-    .t-bubble span.sub {
-      font-size: 1.08rem;
-      color: var(--ink-soft);
-      font-weight: 500;
+    .sparkle-spin {
+      display: inline-block;
+      animation: spinSoft 4s linear infinite;
     }
 
-    .t-connector {
-      width: 3px;
-      height: 14px;
-      background: repeating-linear-gradient(
-        to bottom,
-        var(--lav) 0 6px,
-        transparent 6px 12px
-      );
-      margin: -4px auto 6px;
-      border-radius: 2px;
+    @keyframes spinSoft {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.45rem;
-      margin-top: 1rem;
-      justify-content: center;
-    }
-
-    .chip {
-      background: #fff;
-      border: 3px dashed #c9c4d1;
-      border-radius: 14px;
-      padding: 0.55rem 0.85rem;
-      font-size: 1.05rem;
-      font-weight: 700;
-    }
-
-    .chip-arrow {
-      align-self: center;
-      font-size: 1.35rem;
-      color: var(--ink-soft);
-    }
-
-    .say-box {
-      background: linear-gradient(135deg, #fff 0%, var(--sky-bg) 100%);
-      border: 3px solid #b8d7ff;
-      border-radius: var(--radius);
-      padding: 1.2rem 1.15rem;
-      margin-top: 0.75rem;
-    }
-
-    .say-box p {
+    .api-box p {
       margin: 0;
-      font-size: 1.12rem;
-      font-weight: 600;
-      padding-left: 0.15rem;
-      border-left: 5px solid var(--sky);
+      font-size: 0.92rem;
+      color: var(--ink);
+      line-height: 1.6;
     }
 
-    .say-box p + p {
-      margin-top: 0.85rem;
+    .mini {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeIn 0.8s ease 0.85s forwards;
     }
 
-    .note {
-      background: var(--peach-bg);
-      border: 3px solid #ffb3a7;
-      border-radius: var(--radius);
-      padding: 1.05rem 1.1rem;
-      margin-top: 1.35rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #6a3a32;
+    @keyframes fadeIn {
+      to { opacity: 1; }
     }
 
-    .note .n-emoji {
-      font-size: 1.4rem;
-      margin-right: 0.25rem;
-      vertical-align: -0.15em;
-    }
+    .mini strong { color: var(--ink); }
 
     footer {
-      margin-top: 2.5rem;
+      margin-top: 1.5rem;
       text-align: center;
-      font-size: 0.98rem;
-      color: var(--ink-soft);
-      font-weight: 500;
+      font-size: 0.82rem;
+      color: var(--muted);
     }
 
-    .sparkle {
-      display: inline-block;
-      animation: wiggle 2.2s ease-in-out infinite;
+    .svg-wrap {
+      margin: 0.85rem 0 0.15rem;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.65);
+      border: 3px solid rgba(45, 42, 50, 0.06);
+      overflow: hidden;
     }
 
-    @keyframes wiggle {
-      0%, 100% { transform: rotate(-4deg); }
-      50% { transform: rotate(4deg); }
+    .dash-move {
+      stroke-dasharray: 8 10;
+      animation: dashFlow 1.2s linear infinite;
+    }
+
+    @keyframes dashFlow {
+      to { stroke-dashoffset: -36; }
+    }
+
+    .pulse-dot {
+      animation: dotPulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { r: 5; opacity: 0.7; }
+      50% { r: 7; opacity: 1; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header class="hero">
-      <div class="hero-emoji" aria-hidden="true">🤖✨🌐</div>
-      <h1>CursorというAIに頼んで<br />サイトを「みんなが見られる所」まで</h1>
-      <p class="lead">
-        難しい作業はAIがまとめて手伝います。ここでは、<strong>どんな流れで公開に近づくか</strong>だけを、やさしい言葉と絵で見ていきましょう。
-      </p>
-      <div class="tagline"><span class="sparkle">📚</span> 明るく・短く・スマホ向け</div>
+      <span class="hero-emoji" aria-hidden="true">✨</span>
+      <h1>Cursorに頼んで<br />サイトをネット公開するまで</h1>
+      <p class="sub">3つだけ覚えればOK！</p>
     </header>
 
-    <section aria-labelledby="s1">
-      <h2 id="s1"><span class="icon" aria-hidden="true">🗺️</span> 全体はこの3つだけ</h2>
-      <div class="three">
-        <div class="step-pill mint"><span class="e" aria-hidden="true">🎨</span><span>作る（見た目や文章を形にする）</span></div>
-        <div class="step-pill sky"><span class="e" aria-hidden="true">📦</span><span>片付ける（公開用にまとめる）</span></div>
-        <div class="step-pill peach"><span class="e" aria-hidden="true">🎉</span><span>お披露目（ネットの見える場所へ載せる）</span></div>
+    <div class="flow">
+      <div class="step a">
+        <span class="big" aria-hidden="true">💬</span>
+        <p class="t">① あなたが指示</p>
+        <p class="d">チャットで「こういうサイトが欲しい」と伝える</p>
       </div>
 
-      <svg class="flow-art" viewBox="0 0 360 200" role="img" aria-label="あなたの端末から、AIのお手伝いを経て、みんなの画面につながるイメージ">
-        <title>流れのイラスト</title>
-        <rect width="360" height="200" fill="#fff8f0" rx="18" />
-        <ellipse cx="180" cy="165" rx="150" ry="22" fill="#ffe8dc" opacity="0.55" />
+      <div class="between" aria-hidden="true"><span class="arrow-bob">⬇️</span></div>
 
-        <rect x="22" y="58" width="88" height="72" rx="16" fill="#ffffff" stroke="#5ad4b8" stroke-width="3" />
-        <text x="66" y="88" text-anchor="middle" font-size="28">📱</text>
-        <text x="66" y="118" text-anchor="middle" font-size="13" font-family="M PLUS Rounded 1c, sans-serif" fill="#5c5663" font-weight="700">あなた</text>
+      <div class="step b">
+        <span class="big" aria-hidden="true">🤖</span>
+        <p class="t">② AIがつくって公開</p>
+        <p class="d">ページのもとになる<strong>HTML</strong>を作り、<strong>みんなが見られる状態</strong>まで進める</p>
+      </div>
 
-        <path d="M118 92 L158 92" stroke="#b8a9ff" stroke-width="5" stroke-linecap="round" />
-        <polygon points="158,92 148,84 148,100" fill="#b8a9ff" />
+      <div class="between" aria-hidden="true"><span class="arrow-bob">⬇️</span></div>
 
-        <rect x="162" y="42" width="96" height="104" rx="20" fill="#f0edff" stroke="#b8a9ff" stroke-width="3" />
-        <text x="210" y="82" text-anchor="middle" font-size="30">🤖</text>
-        <text x="210" y="112" text-anchor="middle" font-size="12" font-family="M PLUS Rounded 1c, sans-serif" fill="#5c5663" font-weight="700">Cursor</text>
-        <text x="210" y="132" text-anchor="middle" font-size="11" font-family="M PLUS Rounded 1c, sans-serif" fill="#8b8494" font-weight="600">（AI）</text>
+      <div class="step c">
+        <span class="big" aria-hidden="true">🌐</span>
+        <p class="t">③ 世界に見える</p>
+        <p class="d">リンクを開くと、ブラウザでサイトが表示される</p>
+      </div>
+    </div>
 
-        <path d="M262 92 L302 92" stroke="#6eb6ff" stroke-width="5" stroke-linecap="round" />
-        <polygon points="302,92 292,84 292,100" fill="#6eb6ff" />
-
-        <rect x="306" y="52" width="44" height="44" rx="12" fill="#eaf4ff" stroke="#6eb6ff" stroke-width="3" />
-        <text x="328" y="82" text-anchor="middle" font-size="26">🌍</text>
-        <text x="328" y="128" text-anchor="middle" font-size="11" font-family="M PLUS Rounded 1c, sans-serif" fill="#5c5663" font-weight="700">みんな</text>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 320 120" width="100%" height="120" role="img" aria-label="AIと公開の場所が線でつながるイメージ">
+        <title>つながりのイメージ</title>
+        <line x1="40" y1="60" x2="280" y2="60" stroke="#c9b8ff" stroke-width="6" stroke-linecap="round" opacity="0.35" />
+        <path class="dash-move" d="M 40 60 L 280 60" fill="none" stroke="#9b8cff" stroke-width="4" stroke-linecap="round" />
+        <circle cx="40" cy="60" r="18" fill="#f7f4ff" stroke="#9b8cff" stroke-width="3" />
+        <text x="40" y="67" text-anchor="middle" font-size="20">🤖</text>
+        <circle cx="280" cy="60" r="18" fill="#f3f9ff" stroke="#5eb0ff" stroke-width="3" />
+        <text x="280" y="67" text-anchor="middle" font-size="20">🌍</text>
+        <circle class="pulse-dot" cx="160" cy="60" r="6" fill="#ffc93c" stroke="#fff" stroke-width="2" />
+        <text x="160" y="95" text-anchor="middle" font-size="11" font-family="M PLUS Rounded 1c, sans-serif" fill="#6b6570" font-weight="700">API（自動のやりとり）</text>
       </svg>
+    </div>
 
-      <div class="card">
-        <p>あなたは<strong>やりたいこと</strong>を話すのが中心。AIは<strong>形にする・運ぶ準備・載せる手順</strong>を進めます。最後に、ブラウザで開ける<strong>見るためのリンク</strong>がもらえるイメージです。</p>
+    <div class="api-box">
+      <div class="api-inner">
+        <div class="label"><span class="sparkle-spin" aria-hidden="true">📡</span> 裏側はこうなってる？</div>
+        <p>公開先のサービスとは、<strong>API</strong>という「決まった形の通信」でつながっています。<strong>人が細かく操作しなくても、AI側が勝手にやりとりしてくれる</strong>イメージです。</p>
       </div>
-    </section>
+    </div>
 
-    <section aria-labelledby="s2">
-      <h2 id="s2"><span class="icon" aria-hidden="true">🧩</span> 役割の分かれ目</h2>
-      <div class="lanes">
-        <div class="lane ai">
-          <h3><span aria-hidden="true">✨</span> AI側で進みやすいこと</h3>
-          <ul>
-            <li>ページの見た目づくりや直し</li>
-            <li>公開に向けた整理（同じ場所にまとめる）</li>
-            <li>ネットに載せる作業のまとめ役</li>
-            <li>「開くためのリンク」など結果のお知らせ</li>
-          </ul>
-        </div>
-        <div class="lane you">
-          <h3><span aria-hidden="true">🙋</span> あなたにお願いしたいこと</h3>
-          <ul>
-            <li>はじめてのときだけ、本人確認のような画面操作（AIが案内します）</li>
-            <li>サイトの呼び名（短い名前）を一緒に決める</li>
-            <li>直したあと「また反映して」とチャットで伝える</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+    <p class="mini">直したあとは「<strong>更新してネットにも反映して</strong>」と送ればだいたいOK。<br />最初だけ数分、表示が遅れることがあります。</p>
 
-    <section aria-labelledby="s3">
-      <h2 id="s3"><span class="icon" aria-hidden="true">🌱</span> はじめて載せるとき</h2>
-      <p style="margin: 0 0 1rem; color: var(--ink-soft); font-size: 1.12rem;">上から順に「だいたいこんな感じ」です。細かい順番はその都度で大丈夫です。</p>
-
-      <div class="timeline">
-        <div class="t-item">
-          <div class="t-num" aria-hidden="true">1</div>
-          <div class="t-bubble">
-            <strong>💬 やりたいことを話す</strong>
-            <span class="sub">例：招待ページを作りたい、写真を載せたい、色は明るめがいい、など。</span>
-          </div>
-        </div>
-        <div class="t-connector" aria-hidden="true"></div>
-        <div class="t-item">
-          <div class="t-num" aria-hidden="true">2</div>
-          <div class="t-bubble">
-            <strong>🖼️ AIがページを形にする</strong>
-            <span class="sub">文章や配置のたたき台ができます。気になる所は「もっと大きく」など普通の言葉で直し依頼。</span>
-          </div>
-        </div>
-        <div class="t-connector" aria-hidden="true"></div>
-        <div class="t-item">
-          <div class="t-num" aria-hidden="true">3</div>
-          <div class="t-bubble">
-            <strong>📁 公開用にまとめる</strong>
-            <span class="sub">AIが、ネットに出すための「ひとまとまり」にします。画像も一緒に忘れないようにします。</span>
-          </div>
-        </div>
-        <div class="t-connector" aria-hidden="true"></div>
-        <div class="t-item">
-          <div class="t-num" aria-hidden="true">4</div>
-          <div class="t-bubble">
-            <strong>🔐 はじめてだけの確認</strong>
-            <span class="sub">ネットに載せる権限の確認のような画面が出ることがあります。AIの言う通りに、ゆっくり進めればOK。</span>
-          </div>
-        </div>
-        <div class="t-connector" aria-hidden="true"></div>
-        <div class="t-item">
-          <div class="t-num" aria-hidden="true">5</div>
-          <div class="t-bubble">
-            <strong>🚀 お披露目の作業</strong>
-            <span class="sub">AI側で「載せる」作業が進みます。終わると、共有できる<strong>見るためのリンク</strong>がもらえます。</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="note">
-        <span class="n-emoji" aria-hidden="true">⏳</span>
-        リンクを開いても、最初の数分は「まだ準備中」に見えることがあります。少し待ってから、もう一度開いてみてください。
-      </div>
-    </section>
-
-    <section aria-labelledby="s4">
-      <h2 id="s4"><span class="icon" aria-hidden="true">🔁</span> 2回目以降（中身を直したあと）</h2>
-      <div class="card">
-        <p>もう一度「載せる」大きな作業は基本いりません。<strong>直した内容を、もう一度ネット側に反映して</strong>と頼めば、だいたい短い流れで終わります。</p>
-      </div>
-      <div class="chips" aria-hidden="true">
-        <span class="chip">直す</span>
-        <span class="chip-arrow">→</span>
-        <span class="chip">AIに伝える</span>
-        <span class="chip-arrow">→</span>
-        <span class="chip">反映</span>
-      </div>
-    </section>
-
-    <section aria-labelledby="s5">
-      <h2 id="s5"><span class="icon" aria-hidden="true">💡</span> チャットに書く例（コピーしやすい言い方）</h2>
-      <div class="say-box">
-        <p>「この内容で、みんなが見られるサイトにして。名前は〇〇でお願い。」</p>
-        <p>「さっきのページ、写真を差し替えたから、ネットに載っている方も新しくして。」</p>
-      </div>
-    </section>
-
-    <footer>
-      このページは「Cursorに頼んでサイトを公開するまで」の流れをやさしくまとめたものです。
-    </footer>
+    <footer>やさしい図・Cursor × サイト公開</footer>
   </div>
 </body>
 </html>
